@@ -42,7 +42,7 @@ export default function App() {
     <div className="container">
       <div className="card">
         <h1 className="title">Currency Converter</h1>
-        <Input value={currencyAmount} onHandleAmount={(e) => setCurrencyAmount(Math.max(0, Number(e.target.value)))} disabled={isLoading} />
+        <Input value={currencyAmount} onHandleAmount={(e) => setCurrencyAmount(Math.max(0, Number(e.target.value)))} />
         <div className="exchange-container">
           <CurrencyExchange value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)} disabled={isLoading} />
           <span className="arrow">→</span>
@@ -54,14 +54,14 @@ export default function App() {
   );
 }
 
-function Input({ value, onHandleAmount, disabled }) {
+function Input({ value, onHandleAmount }) {
   return (
     <input
       type="number"
       value={value}
       onChange={onHandleAmount}
       className="input-field"
-      disabled={disabled}
+      // disabled={disabled}
     />
   );
 }
