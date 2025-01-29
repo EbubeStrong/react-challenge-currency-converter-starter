@@ -6,12 +6,15 @@ export default function App() {
   const [currencyResult, setCurrencyResult] = useState(0);
   const [fromCurrency, setFromCurrency] = useState("USD");
   const [toCurrency, setToCurrency] = useState("EUR");
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchExchangeRate = async () => {
       if (currencyAmount <= 0) return;
 
       try {
+        setIsLoading(true)
+        
         const res = await fetch(
           `https://api.frankfurter.app/latest?amount=${currencyAmount}&from=${fromCurrency}&to=${toCurrency}`
         );
@@ -27,6 +30,8 @@ export default function App() {
       }
     };
 
+    if(fromCurrency === toCurrency) return currentAmount;
+    
     fetchExchangeRate();
   }, [currencyAmount, fromCurrency, toCurrency]);
 
@@ -34,11 +39,11 @@ export default function App() {
     <div className="container">
       <div className="card">
         <h1 className="title">Currency Converter</h1>
-        <Input value={currencyAmount} onHandleAmount={(e) => setCurrencyAmount(Math.max(0, Number(e.target.value)))} />
+        <Input value={currencyAmount} onHandleAmount={(e) => setCurrencyAmount(Math.max(0, Number(e.target.value)))} disabled={isLoading} />
         <div className="exchange-container">
-          <CurrencyExchange value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)} />
+          <CurrencyExchange value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)} disabled={isLoading} />
           <span className="arrow">→</span>
-          <CurrencyExchange value={toCurrency} onChange={(e) => setToCurrency(e.target.value)} />
+          <CurrencyExchange value={toCurrency} onChange={(e) => setToCurrency(e.target.value)} disabled={isLoading}/>
         </div>
         <Result value={currencyResult.toFixed(2)} currencyUnit={toCurrency} />
       </div>
@@ -46,23 +51,25 @@ export default function App() {
   );
 }
 
-function Input({ value, onHandleAmount }) {
+function Input({ value, onHandleAmount, disabled }) {
   return (
     <input
       type="number"
       value={value}
       onChange={onHandleAmount}
       className="input-field"
+      disabled={disabled}
     />
   );
 }
 
-function CurrencyExchange({ value, onChange }) {
+function CurrencyExchange({ value, onChange, disabled }) {
   return (
     <select
       value={value}
       onChange={onChange}
       className="select-box"
+      disabled={disabled}
     >
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>
