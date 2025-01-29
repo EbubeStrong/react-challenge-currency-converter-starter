@@ -30,7 +30,7 @@ export default function App() {
       }
     };
 
-    if(fromCurrency === toCurrency) return currentAmount;
+    if(fromCurrency === toCurrency) return setCurrencyAmount(currencyAmount);
     
     fetchExchangeRate();
   }, [currencyAmount, fromCurrency, toCurrency]);
