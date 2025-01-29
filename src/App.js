@@ -14,7 +14,6 @@ export default function App() {
 
       try {
         setIsLoading(true)
-        
         const res = await fetch(
           `https://api.frankfurter.app/latest?amount=${currencyAmount}&from=${fromCurrency}&to=${toCurrency}`
         );
@@ -27,10 +26,14 @@ export default function App() {
         setCurrencyResult(data.rates[toCurrency]);
       } catch (error) {
         console.error("Fetch Error:", error);
-      }
+      } finally {
+  setIsLoading(false); // ✅ Ensure loading state resets
+}
     };
-
-    if(fromCurrency === toCurrency) return setCurrencyAmount(currencyAmount);
+   if (fromCurrency === toCurrency) {
+  setCurrencyResult(currencyAmount);
+  return;
+}
     
     fetchExchangeRate();
   }, [currencyAmount, fromCurrency, toCurrency]);
@@ -45,7 +48,7 @@ export default function App() {
           <span className="arrow">→</span>
           <CurrencyExchange value={toCurrency} onChange={(e) => setToCurrency(e.target.value)} disabled={isLoading}/>
         </div>
-        <Result value={currencyResult.toFixed(2)} currencyUnit={toCurrency} />
+        <Result value={currencyResult.toFixed(2)} currencyUnit={toCurrency} isLoading={isLoading}/>
       </div>
     </div>
   );
@@ -79,10 +82,10 @@ function CurrencyExchange({ value, onChange, disabled }) {
   );
 }
 
-function Result({ value, currencyUnit }) {
+function Result({ value, currencyUnit, isLoading }) {
   return (
     <p className="result">
-      Converted Amount: {value} {currencyUnit}
+      {isLoading ? "Fetching rates..." : `Converted Amount: ${value} ${currencyUnit}`}
     </p>
   );
 }
