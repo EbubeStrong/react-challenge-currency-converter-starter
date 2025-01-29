@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
+import "./styles.css";
 
 export default function App() {
   const [currencyAmount, setCurrencyAmount] = useState(1);
   const [currencyResult, setCurrencyResult] = useState(0);
-
   const [fromCurrency, setFromCurrency] = useState("USD");
   const [toCurrency, setToCurrency] = useState("EUR");
 
   useEffect(() => {
-    const langSearch = async () => {
+    const fetchExchangeRate = async () => {
       if (currencyAmount <= 0) return;
 
       try {
@@ -27,40 +27,43 @@ export default function App() {
       }
     };
 
-    langSearch();
-  }, [currencyAmount, fromCurrency, toCurrency]); // ✅ Only runs on mount
-
-  function handleCurrencyAmount(e) {
-    // setCurrencyAmount(!Number(e.target.value) ? 0 : Number(e.target.value));
-    const value = Number(e.target.value);
-    setCurrencyAmount(value > 0 ? value : 0);
-  }
-
-  function handleFromCurrency(e) {
-    setFromCurrency(e.target.value);
-  }
-
-  function handleToCurrency(e) {
-    setToCurrency(e.target.value);
-  }
+    fetchExchangeRate();
+  }, [currencyAmount, fromCurrency, toCurrency]);
 
   return (
-    <div>
-      <Input value={currencyAmount} onHandleAmount={handleCurrencyAmount} />
-      <CurrencyExchange value={fromCurrency} onChange={handleFromCurrency} />
-      <CurrencyExchange value={toCurrency} onChange={handleToCurrency} />
-      <Result value={currencyResult.toFixed(2)} currencyUnit={toCurrency} />
+    <div className="container">
+      <div className="card">
+        <h1 className="title">Currency Converter</h1>
+        <Input value={currencyAmount} onHandleAmount={(e) => setCurrencyAmount(Math.max(0, Number(e.target.value)))} />
+        <div className="exchange-container">
+          <CurrencyExchange value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)} />
+          <span className="arrow">→</span>
+          <CurrencyExchange value={toCurrency} onChange={(e) => setToCurrency(e.target.value)} />
+        </div>
+        <Result value={currencyResult.toFixed(2)} currencyUnit={toCurrency} />
+      </div>
     </div>
   );
 }
 
 function Input({ value, onHandleAmount }) {
-  return <input type="text" value={value} onChange={onHandleAmount} />;
+  return (
+    <input
+      type="number"
+      value={value}
+      onChange={onHandleAmount}
+      className="input-field"
+    />
+  );
 }
 
 function CurrencyExchange({ value, onChange }) {
   return (
-    <select value={value} onChange={onChange}>
+    <select
+      value={value}
+      onChange={onChange}
+      className="select-box"
+    >
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>
       <option value="CAD">CAD</option>
@@ -71,8 +74,8 @@ function CurrencyExchange({ value, onChange }) {
 
 function Result({ value, currencyUnit }) {
   return (
-    <p>
-      Converted Amount {!value ? "Loading..." : value} {currencyUnit}
+    <p className="result">
+      Converted Amount: {value} {currencyUnit}
     </p>
   );
 }
