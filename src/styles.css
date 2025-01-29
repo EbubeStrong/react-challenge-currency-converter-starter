@@ -1,7 +1,7 @@
 /* styles.css */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(to right, #4a90e2, #9013fe);
+  background: linear-gradient(to right, black, white);
   color: white;
   display: flex;
   justify-content: center;
@@ -25,7 +25,7 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
 }
 
 .title {
